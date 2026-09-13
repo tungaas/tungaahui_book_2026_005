@@ -266,6 +266,8 @@ for(let i=1;i<=pdf.numPages;i++){
 
 flip.loadFromHTML(pages);
 
+document.querySelector("#loading")?.remove();
+
 async function renderPage(pageNumber){
 
   if(pageNumber < 1 || pageNumber > pdf.numPages) return;
