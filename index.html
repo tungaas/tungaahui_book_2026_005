@@ -189,9 +189,7 @@ function renderLibrary(){
     card.className = "card";
 
     card.innerHTML = `
-
       <div class="cover">
-
         <img
           src="${b.cover}"
           alt="${b.title}"
@@ -202,7 +200,6 @@ function renderLibrary(){
             display:block;
           "
         >
-
       </div>
 
       <div class="card-meta">
@@ -216,7 +213,6 @@ function renderLibrary(){
       <div class="open-label">
         Номыг нээх →
       </div>
-
     `;
 
     card.onclick = () => openBook(b);
