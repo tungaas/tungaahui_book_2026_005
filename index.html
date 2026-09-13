@@ -291,16 +291,14 @@ async function renderPage(pageNumber){
   const outputScale =
     Math.min(window.devicePixelRatio || 1, 2);
 
-  /* Дэлгэц дээр харагдах жинхэнэ хэмжээ */
-  canvas.style.width = `${v.width / renderScale}px`;
-  canvas.style.height = `${v.height / renderScale}px`;
-
-  /* Өндөр resolution-той дотоод canvas */
+  /* Өндөр resolution-оор дотор нь render хийнэ */
   canvas.width =
     Math.floor(v.width * outputScale);
 
   canvas.height =
     Math.floor(v.height * outputScale);
+
+  /* Дэлгэц дээрх хэмжээг PageFlip өөрөө удирдана */
 
   await p.render({
     canvasContext: ctx,
