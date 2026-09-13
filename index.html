@@ -245,11 +245,21 @@ async function openBook(b){
     const vp=first.getViewport({scale:1});
     const width=Math.min(630,Math.max(300,innerWidth*.42));
     const height=width*(vp.height/vp.width);
+
     const flip=new St.PageFlip(bookEl,{
-      width,height,size:"stretch",minWidth:280,maxWidth:900,
-      minHeight:380,maxHeight:1200,showCover:true,
-      useMouseEvents:true,mobileScrollSupport:false,maxShadowOpacity:.25
-    });
+  width,
+  height,
+  size:"stretch",
+  minWidth:280,
+  maxWidth:900,
+  minHeight:380,
+  maxHeight:1200,
+  showCover:true,
+  usePortrait:false,
+  useMouseEvents:true,
+  mobileScrollSupport:false,
+  maxShadowOpacity:.25
+});
 
     const pages = [];
 const rendered = new Set();
