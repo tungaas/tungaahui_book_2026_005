@@ -189,18 +189,18 @@ function renderLibrary(){
     card.className = "card";
 
     card.innerHTML = `
-      <div class="cover">
-        <img
-          src="${b.cover}"
-          alt="${b.title}"
-          style="
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            display:block;
-          "
-        >
-      </div>
+      <div class="cover" style="background:#fff; padding:0; overflow:hidden;">
+  <img
+    src="${b.cover}"
+    alt="${b.title}"
+    style="
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    "
+  >
+</div>
 
       <div class="card-meta">
         DIGITAL BOOK
