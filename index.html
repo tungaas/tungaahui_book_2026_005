@@ -251,30 +251,29 @@ async function openBook(b){
     const width=Math.min(630,Math.max(300,innerWidth*.42));
     const height=width*(vp.height/vp.width);
 
-   const flip=new St.PageFlip(bookEl,{
-  width,
-  height,
+   const flip = new St.PageFlip(bookEl, {
+  width: width,
+  height: height,
 
-  size:"fixed",
+  size: "fixed",
 
-  minWidth:280,
-  maxWidth:900,
-  minHeight:380,
-  maxHeight:1200,
+  minWidth: 280,
+  maxWidth: 900,
+  minHeight: 380,
+  maxHeight: 1200,
 
-  showCover:false,
-  showPageCorners:false,
+  showCover: false,
+  usePortrait: false,
 
-  usePortrait:false,
-  useMouseEvents:false,
-  mobileScrollSupport:false,
+  useMouseEvents: false,
+  mobileScrollSupport: false,
 
-  drawShadow:false,
-  maxShadowOpacity:0,
+  drawShadow: false,
+  maxShadowOpacity: 0,
 
-  flippingTime:600
+  flippingTime: 500
 });
-
+    
     const pages = [];
 const rendered = new Set();
 
