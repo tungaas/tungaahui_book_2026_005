@@ -244,19 +244,65 @@ async function openBook(b){
       useMouseEvents:true,mobileScrollSupport:false,maxShadowOpacity:.25
     });
 
-    const pages=[];
-    for(let i=1;i<=pdf.numPages;i++){
-      const p=await pdf.getPage(i);
-      const v=p.getViewport({scale:1.45});
-      const c=document.createElement("canvas");
-      c.width=v.width;c.height=v.height;
-      await p.render({canvasContext:c.getContext("2d"),viewport:v}).promise;
-      const d=document.createElement("div");
-      d.className="page";d.appendChild(c);pages.push(d);
-    }
-    flip.loadFromHTML(pages);
-    const update=()=>info.textContent=`Хуудас ${flip.getCurrentPageIndex()+1} / ${pdf.numPages}`;
-    flip.on("flip",update);update();
+    const pages = [];
+const rendered = new Set();
+
+const firstPage = await pdf.getPage(1);
+const firstViewport = firstPage.getViewport({scale:1.1});
+
+for(let i=1;i<=pdf.numPages;i++){
+
+  const d = document.createElement("div");
+  d.className = "page";
+
+  const c = document.createElement("canvas");
+
+  c.width = firstViewport.width;
+  c.height = firstViewport.height;
+
+  d.appendChild(c);
+  pages.push(d);
+}
+
+flip.loadFromHTML(pages);
+
+async function renderPage(pageNumber){
+
+  if(pageNumber < 1 || pageNumber > pdf.numPages) return;
+  if(rendered.has(pageNumber)) return;
+
+  rendered.add(pageNumber);
+
+  const p = await pdf.getPage(pageNumber);
+  const v = p.getViewport({scale:1.1});
+
+  const canvas = pages[pageNumber - 1].querySelector("canvas");
+
+  canvas.width = v.width;
+  canvas.height = v.height;
+
+  await p.render({
+    canvasContext: canvas.getContext("2d"),
+    viewport: v
+  }).promise;
+}
+
+await renderPage(1);
+if(pdf.numPages > 1) await renderPage(2);
+    const update = async () => {
+
+  const current = flip.getCurrentPageIndex() + 1;
+
+  info.textContent =
+    `Хуудас ${current} / ${pdf.numPages}`;
+
+  await renderPage(current);
+  await renderPage(current + 1);
+  await renderPage(current - 1);
+};
+
+flip.on("flip", update);
+update();
 
     document.querySelector(".prev").onclick=()=>flip.flipPrev();
     document.querySelector(".next").onclick=()=>flip.flipNext();
