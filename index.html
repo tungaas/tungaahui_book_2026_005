@@ -322,6 +322,7 @@ async function renderPage(pageNumber){
 }
 
 await renderPage(1);
+if(pdf.numPages > 1) await renderPage(2);
     const update = async () => {
 
   const current = flip.getCurrentPageIndex() + 1;
