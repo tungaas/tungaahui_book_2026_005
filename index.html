@@ -3,62 +3,247 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Tungaahui Digital Book</title>
+<title>Тунгаахуй — Digital Book Library</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{font-family:Arial,Helvetica,sans-serif;background:#f8f7f5;color:#17245b}
-body:before,body:after{content:"";position:fixed;border:3px solid rgba(238,35,45,.08);border-radius:50%;pointer-events:none}
-body:before{width:760px;height:760px;right:-250px;top:-230px;box-shadow:0 0 0 35px rgba(238,35,45,.04),0 0 0 70px rgba(238,35,45,.035),0 0 0 105px rgba(238,35,45,.03),0 0 0 140px rgba(238,35,45,.025)}
-body:after{width:500px;height:500px;left:-250px;bottom:-250px;box-shadow:0 0 0 35px rgba(23,36,91,.035),0 0 0 70px rgba(23,36,91,.03),0 0 0 105px rgba(23,36,91,.025)}
-header{text-align:center;height:92px;padding-top:24px;position:relative;z-index:2}
-.kicker{font-size:10px;letter-spacing:5px;color:#6f7690;margin-bottom:7px}
-.title{font-size:25px;letter-spacing:4px;font-weight:500}.title b{color:#ed1c24}
-#stage{position:absolute;left:0;right:0;top:92px;bottom:74px;display:flex;align-items:center;justify-content:center;z-index:1}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:#17245b}
+body{
+  background:#f8f7f5;
+  overflow-x:hidden;
+  position:relative;
+}
+body:before,body:after{
+  content:"";position:fixed;border:3px solid rgba(238,35,45,.08);
+  border-radius:50%;pointer-events:none;z-index:0
+}
+body:before{
+  width:760px;height:760px;right:-250px;top:-230px;
+  box-shadow:0 0 0 35px rgba(238,35,45,.04),0 0 0 70px rgba(238,35,45,.035),
+  0 0 0 105px rgba(238,35,45,.03),0 0 0 140px rgba(238,35,45,.025)
+}
+body:after{
+  width:500px;height:500px;left:-250px;bottom:-250px;
+  box-shadow:0 0 0 35px rgba(23,36,91,.035),0 0 0 70px rgba(23,36,91,.03),
+  0 0 0 105px rgba(23,36,91,.025)
+}
+header{
+  text-align:center;padding:30px 20px 18px;position:relative;z-index:2
+}
+.kicker{font-size:10px;letter-spacing:5px;color:#6f7690;margin-bottom:8px}
+.main-title{font-size:28px;letter-spacing:4px;font-weight:500}
+.main-title b{color:#ed1c24}
+.library-subtitle{margin-top:10px;color:#7b8195;font-size:13px;letter-spacing:1px}
+
+#library{
+  position:relative;z-index:2;
+  width:min(1120px,92vw);margin:20px auto 70px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:28px
+}
+.card{
+  background:rgba(255,255,255,.92);border:1px solid #e7e5e1;border-radius:6px;
+  padding:18px;box-shadow:0 10px 28px rgba(30,38,70,.07);
+  cursor:pointer;transition:.2s transform,.2s box-shadow
+}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(30,38,70,.12)}
+.cover{
+  height:300px;border-radius:3px;display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:28px;color:#fff;background:#c92832;
+  box-shadow:0 8px 18px rgba(0,0,0,.12);position:relative;overflow:hidden
+}
+.cover:before{
+  content:"";position:absolute;width:300px;height:300px;border:2px solid rgba(255,255,255,.18);
+  border-radius:50%;right:-150px;bottom:-130px;
+  box-shadow:0 0 0 28px rgba(255,255,255,.08),0 0 0 56px rgba(255,255,255,.06)
+}
+.cover-title{font-size:24px;line-height:1.35;font-weight:700;position:relative;z-index:1}
+.card-meta{font-size:10px;letter-spacing:2px;color:#8a8f9e;margin-top:17px}
+.card-title{font-size:17px;line-height:1.45;margin-top:7px;font-weight:600}
+.open-label{display:inline-block;margin-top:14px;padding:8px 15px;border:1px solid #ddd;
+  border-radius:20px;font-size:12px;color:#17245b;background:#fff}
+
+#reader{display:none;position:relative;z-index:2}
+.reader-header{text-align:center;padding:24px 15px 10px}
+.reader-title{font-size:24px;letter-spacing:2px;font-weight:500}
+.reader-title b{color:#ed1c24}
+#stage{
+  position:relative;width:100%;height:calc(100vh - 175px);
+  min-height:520px;display:flex;align-items:center;justify-content:center
+}
 #book{width:min(82vw,1260px);height:min(72vh,700px);position:relative}
 .page{background:#fff;overflow:hidden}.page canvas{width:100%;height:100%;display:block}
 #loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#70758a}
-.nav{position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;border:1px solid #ddd;border-radius:50%;background:rgba(255,255,255,.9);color:#17245b;font-size:22px;cursor:pointer;z-index:4}
+.nav{
+  position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;
+  border:1px solid #ddd;border-radius:50%;background:rgba(255,255,255,.92);
+  color:#17245b;font-size:22px;cursor:pointer;z-index:5
+}
 .nav:hover{background:#fff}.prev{left:3%}.next{right:3%}
-footer{position:fixed;bottom:18px;left:0;right:0;height:38px;display:flex;justify-content:center;align-items:center;gap:18px;z-index:5}
-#info{font-size:13px;font-weight:600;letter-spacing:1px}.full{border:1px solid #d4d4d4;border-radius:22px;background:rgba(255,255,255,.9);padding:9px 17px;color:#17245b;cursor:pointer}
+.reader-footer{
+  position:fixed;bottom:15px;left:0;right:0;height:38px;display:flex;
+  justify-content:center;align-items:center;gap:18px;z-index:5
+}
+#info{font-size:13px;font-weight:600;letter-spacing:1px}
+.button{
+  border:1px solid #d4d4d4;border-radius:22px;background:rgba(255,255,255,.94);
+  padding:9px 17px;color:#17245b;cursor:pointer
+}
+.back{position:fixed;top:20px;left:20px;z-index:6}
 .credit{position:fixed;right:18px;bottom:12px;font-size:9px;letter-spacing:2px;color:#999;z-index:5}
+
 @media(max-width:700px){
- header{height:75px;padding-top:17px}.kicker{font-size:8px;letter-spacing:3px}.title{font-size:17px;letter-spacing:2px}
- #stage{top:75px;bottom:65px}#book{width:90vw;height:72vh}.nav{width:38px;height:38px;font-size:18px}.prev{left:2%}.next{right:2%}
- footer{bottom:8px}.credit{display:none}
+  header{padding-top:20px}.main-title{font-size:19px;letter-spacing:2px}
+  .kicker{font-size:8px;letter-spacing:3px}
+  #library{grid-template-columns:1fr;max-width:360px}
+  .cover{height:260px}
+  .reader-title{font-size:17px}
+  #stage{height:calc(100vh - 145px);min-height:430px}
+  #book{width:90vw;height:72vh}
+  .nav{width:38px;height:38px;font-size:18px}.prev{left:2%}.next{right:2%}
+  .credit{display:none}.back{top:10px;left:10px}
 }
 </style>
 </head>
 <body>
-<header><div class="kicker">ТУНГААХУЙ ӨГӨГДЛИЙН УРЛАН</div><div class="title">СУДАЛГААНД <b>ХҮНИЙ ХУВИЙН МЭДЭЭЛЛИЙГ</b> АШИГЛАХ НЬ</div></header>
-<div id="stage"><div id="book"><div id="loading">Номыг ачаалж байна…</div></div></div>
-<button class="nav prev" aria-label="Previous">‹</button><button class="nav next" aria-label="Next">›</button>
-<footer><span id="info">Хуудас 1 / …</span><button class="full" id="fullscreen">⛶&nbsp; Бүтэн дэлгэц</button></footer>
+
+<header id="libraryHeader">
+  <div class="kicker">ТУНГААХУЙ ӨГӨГДЛИЙН УРЛАН</div>
+  <div class="main-title">DIGITAL <b>BOOK LIBRARY</b></div>
+  <div class="library-subtitle">Судалгаа • Өгөгдөл • Мэдлэг</div>
+</header>
+
+<main id="library"></main>
+
+<section id="reader">
+  <button class="button back" id="backToLibrary">← Номын сан</button>
+  <div class="reader-header">
+    <div class="kicker">ТУНГААХУЙ ӨГӨГДЛИЙН УРЛАН</div>
+    <div class="reader-title" id="readerTitle"></div>
+  </div>
+  <div id="stage">
+    <div id="book"><div id="loading">Номыг ачаалж байна…</div></div>
+  </div>
+  <button class="nav prev" aria-label="Previous">‹</button>
+  <button class="nav next" aria-label="Next">›</button>
+  <div class="reader-footer">
+    <span id="info">Хуудас 1 / …</span>
+    <button class="button" id="fullscreen">⛶&nbsp; Бүтэн дэлгэц</button>
+  </div>
+</section>
+
 <div class="credit">© ТУНГААХУЙ</div>
+
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <script type="module">
 import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
-const PDF="./Redbook2.pdf", book=document.querySelector("#book"), loading=document.querySelector("#loading"), info=document.querySelector("#info");
-try{
- const pdf=await pdfjsLib.getDocument(PDF).promise;
- const first=await pdf.getPage(1), vp=first.getViewport({scale:1});
- const width=Math.min(630,Math.max(300,innerWidth*.42)), height=width*(vp.height/vp.width);
- const flip=new St.PageFlip(book,{width,height,size:"stretch",minWidth:280,maxWidth:900,minHeight:380,maxHeight:1200,showCover:true,useMouseEvents:true,mobileScrollSupport:false,maxShadowOpacity:.25});
- const pages=[];
- for(let i=1;i<=pdf.numPages;i++){
-   const p=await pdf.getPage(i), v=p.getViewport({scale:1.45});
-   const c=document.createElement("canvas"); c.width=v.width;c.height=v.height;
-   await p.render({canvasContext:c.getContext("2d"),viewport:v}).promise;
-   const d=document.createElement("div");d.className="page";d.appendChild(c);pages.push(d);
- }
- flip.loadFromHTML(pages);loading.remove();
- const update=()=>info.textContent=`Хуудас ${flip.getCurrentPageIndex()+1} / ${pdf.numPages}`;
- flip.on("flip",update);update();
- document.querySelector(".prev").onclick=()=>flip.flipPrev();
- document.querySelector(".next").onclick=()=>flip.flipNext();
- document.querySelector("#fullscreen").onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();
-}catch(e){loading.textContent="Ном ачаалахад алдаа гарлаа. Redbook2.pdf файл repository-д байгаа эсэхийг шалгана уу.";console.error(e)}
+
+/*
+  ШИНЭ НОМ НЭМЭХДЭЭ ЗӨВХӨН ЭНЭ ЖАГСААЛТАД 1 МӨР НЭМНЭ.
+  Дараа нь PDF файлаа repository-д байрлуулна.
+*/
+const books = [
+  {
+    slug: "privacy",
+    title: "СУДАЛГААНД ХҮНИЙ ХУВИЙН МЭДЭЭЛЛИЙГ АШИГЛАХ НЬ",
+    shortTitle: "ХҮНИЙ ХУВИЙН МЭДЭЭЛЛИЙГ АШИГЛАХ НЬ",
+    pdf: "/Redbook2.pdf"
+  }
+
+  // Жишээ:
+  // ,{
+  //   slug: "ev",
+  //   title: "ЦАХИЛГААН ТЭЭВРИЙН ХЭРЭГСЛИЙН СУДАЛГАА",
+  //   shortTitle: "ЦАХИЛГААН ТЭЭВРИЙН ХЭРЭГСЛИЙН СУДАЛГАА",
+  //   pdf: "/EV.pdf"
+  // }
+];
+
+const library = document.querySelector("#library");
+const libraryHeader = document.querySelector("#libraryHeader");
+const reader = document.querySelector("#reader");
+const readerTitle = document.querySelector("#readerTitle");
+const bookEl = document.querySelector("#book");
+const loading = document.querySelector("#loading");
+const info = document.querySelector("#info");
+
+function showLibrary(){
+  reader.style.display="none";
+  libraryHeader.style.display="block";
+  library.style.display="grid";
+  document.title="Тунгаахуй — Digital Book Library";
+  history.replaceState({}, "", "/");
+  window.scrollTo(0,0);
+}
+
+function renderLibrary(){
+  library.innerHTML="";
+  books.forEach(b=>{
+    const card=document.createElement("article");
+    card.className="card";
+    card.innerHTML=`
+      <div class="cover"><div class="cover-title">${b.shortTitle}</div></div>
+      <div class="card-meta">DIGITAL BOOK</div>
+      <div class="card-title">${b.title}</div>
+      <div class="open-label">Номыг нээх →</div>
+    `;
+    card.onclick=()=>openBook(b);
+    library.appendChild(card);
+  });
+}
+
+async function openBook(b){
+  library.style.display="none";
+  libraryHeader.style.display="none";
+  reader.style.display="block";
+  readerTitle.innerHTML = b.title.replace("ХҮНИЙ ХУВИЙН МЭДЭЭЛЛИЙГ","<b>ХҮНИЙ ХУВИЙН МЭДЭЭЛЛИЙГ</b>");
+  document.title=b.title;
+  history.replaceState({}, "", "/"+b.slug);
+  bookEl.innerHTML='<div id="loading">Номыг ачаалж байна…</div>';
+
+  try{
+    const pdf=await pdfjsLib.getDocument(b.pdf).promise;
+    const first=await pdf.getPage(1);
+    const vp=first.getViewport({scale:1});
+    const width=Math.min(630,Math.max(300,innerWidth*.42));
+    const height=width*(vp.height/vp.width);
+    const flip=new St.PageFlip(bookEl,{
+      width,height,size:"stretch",minWidth:280,maxWidth:900,
+      minHeight:380,maxHeight:1200,showCover:true,
+      useMouseEvents:true,mobileScrollSupport:false,maxShadowOpacity:.25
+    });
+
+    const pages=[];
+    for(let i=1;i<=pdf.numPages;i++){
+      const p=await pdf.getPage(i);
+      const v=p.getViewport({scale:1.45});
+      const c=document.createElement("canvas");
+      c.width=v.width;c.height=v.height;
+      await p.render({canvasContext:c.getContext("2d"),viewport:v}).promise;
+      const d=document.createElement("div");
+      d.className="page";d.appendChild(c);pages.push(d);
+    }
+    flip.loadFromHTML(pages);
+    const update=()=>info.textContent=`Хуудас ${flip.getCurrentPageIndex()+1} / ${pdf.numPages}`;
+    flip.on("flip",update);update();
+
+    document.querySelector(".prev").onclick=()=>flip.flipPrev();
+    document.querySelector(".next").onclick=()=>flip.flipNext();
+    document.querySelector("#fullscreen").onclick=()=>document.fullscreenElement
+      ?document.exitFullscreen():document.documentElement.requestFullscreen();
+
+  }catch(e){
+    document.querySelector("#loading").textContent=
+      "Ном ачаалахад алдаа гарлаа. PDF файл repository-д байгаа эсэхийг шалгана уу.";
+    console.error(e);
+  }
+}
+
+document.querySelector("#backToLibrary").onclick=showLibrary;
+renderLibrary();
+
+const slug=location.pathname.replace(/^\/|\/$/g,"");
+const selected=books.find(b=>b.slug===slug);
+if(selected) openBook(selected);
 </script>
 </body>
 </html>
