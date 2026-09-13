@@ -276,16 +276,38 @@ async function renderPage(pageNumber){
   rendered.add(pageNumber);
 
   const p = await pdf.getPage(pageNumber);
-  const v = p.getViewport({scale:1.45});
 
-  const canvas = pages[pageNumber - 1].querySelector("canvas");
+  const v = p.getViewport({
+    scale: 1.45
+  });
 
-  canvas.width = v.width;
-  canvas.height = v.height;
+  const canvas =
+    pages[pageNumber - 1].querySelector("canvas");
+
+  const ctx = canvas.getContext("2d");
+
+  const outputScale =
+    window.devicePixelRatio || 1;
+
+  /* Жинхэнэ харагдах хэмжээ */
+  canvas.style.width = `${v.width}px`;
+  canvas.style.height = `${v.height}px`;
+
+  /* Retina-ийн өндөр resolution */
+  canvas.width = Math.floor(v.width * outputScale);
+  canvas.height = Math.floor(v.height * outputScale);
 
   await p.render({
-    canvasContext: canvas.getContext("2d"),
-    viewport: v
+    canvasContext: ctx,
+    viewport: v,
+    transform: [
+      outputScale,
+      0,
+      0,
+      outputScale,
+      0,
+      0
+    ]
   }).promise;
 }
 
