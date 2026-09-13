@@ -254,7 +254,8 @@ async function openBook(b){
    const flip=new St.PageFlip(bookEl,{
   width,
   height,
-  size:"stretch",
+
+  size:"fixed",
 
   minWidth:280,
   maxWidth:900,
@@ -262,12 +263,15 @@ async function openBook(b){
   maxHeight:1200,
 
   showCover:false,
+  showPageCorners:false,
+
   usePortrait:false,
   useMouseEvents:false,
   mobileScrollSupport:false,
 
   drawShadow:false,
   maxShadowOpacity:0,
+
   flippingTime:600
 });
 
