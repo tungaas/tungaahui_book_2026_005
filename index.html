@@ -76,7 +76,12 @@ header{
   padding-top:10px;
   box-sizing:border-box;
 }
-#book{width:min(92vw,1260px);height:min(78vh,700px);position:relative};
+
+  #book{
+  width:min(92vw,1260px);
+  height:min(78vh,700px);
+  position:relative;
+}
 .page{background:#fff;overflow:hidden}.page canvas{width:100%;height:100%;display:block}
 #loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#70758a}
 .nav{
@@ -246,25 +251,24 @@ async function openBook(b){
     const width=Math.min(630,Math.max(300,innerWidth*.42));
     const height=width*(vp.height/vp.width);
 
-    const flip=new St.PageFlip(bookEl,{
+   const flip=new St.PageFlip(bookEl,{
   width,
   height,
   size:"stretch",
+
   minWidth:280,
   maxWidth:900,
   minHeight:380,
   maxHeight:1200,
-  showCover:true,
-showPageCorners:false,
 
-      
+  showCover:false,
   usePortrait:false,
-  useMouseEvents:true,
+  useMouseEvents:false,
   mobileScrollSupport:false,
-  maxShadowOpacity:0.35,
-  flippingTime:800,
-  drawShadow:true,
-  maxShadowOpacity:0.5
+
+  drawShadow:false,
+  maxShadowOpacity:0,
+  flippingTime:600
 });
 
     const pages = [];
