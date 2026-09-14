@@ -251,7 +251,7 @@ async function openBook(b){
     const width=Math.min(630,Math.max(300,innerWidth*.42));
     const height=width*(vp.height/vp.width);
 
-   const flip=new St.PageFlip(bookEl,{
+  const flip=new St.PageFlip(bookEl,{
   width,
   height,
   size:"stretch",
@@ -260,15 +260,15 @@ async function openBook(b){
   minHeight:380,
   maxHeight:1200,
 
-  showCover:false,
+  showCover: true, // <-- ЭНИЙГ true БОЛГОНО (Эхний нүүр ганцаараа харагдана)
   showPageCorners:false,
-  usePortrait:false,
-  useMouseEvents:false,
+  usePortrait: true, // <-- ЭНИЙГ true БОЛГОНО (Жижиг дэлгэц дээр 1 хуудсаар гарна)
+  useMouseEvents: true, // <-- ЭНИЙГ true БОЛГОНО (Хулганаар чирж эргүүлнэ)
   mobileScrollSupport:false,
 
   flippingTime:600,
-  drawShadow:false,
-  maxShadowOpacity:0
+  drawShadow: true, // <-- ЭНИЙГ true БОЛГОНО (Номын голын сүүдэртэй болно)
+  maxShadowOpacity: 0.15
 });
     
     const pages = [];
@@ -345,17 +345,22 @@ async function renderPage(pageNumber){
 
 await renderPage(1);
 if(pdf.numPages > 1) await renderPage(2);
+    
     const update = async () => {
-
   const current = flip.getCurrentPageIndex() + 1;
 
-  info.textContent =
-    `Хуудас ${current} / ${pdf.numPages}`;
+  if (current === 1) {
+    info.textContent = `Нүүр хуудас (1 / ${pdf.numPages})`;
+  } else {
+    info.textContent = `Хуудас ${current} / ${pdf.numPages}`;
+  }
 
   await renderPage(current);
   await renderPage(current + 1);
+  await renderPage(current + 2);
   await renderPage(current - 1);
 };
+    
 
 flip.on("flip", update);
 update();
