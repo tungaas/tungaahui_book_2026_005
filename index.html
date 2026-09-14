@@ -68,7 +68,7 @@ header{
 #stage{
   position:relative;
   width:100%;
-  height:calc(100vh - 260px);
+  height:calc(100vh - 175px);
   min-height:520px;
   display:flex;
   align-items:flex-start;
@@ -76,14 +76,13 @@ header{
   padding-top:10px;
   box-sizing:border-box;
 }
+
 #book{
   width:min(92vw,1260px);
   height:min(78vh,700px);
   position:relative;
-  margin:0 auto;
 }
-.page{background:#fff;overflow:hidden;box-sizing:border-box;transform:translateZ(0)}.page canvas{width:100%;height:100%;display:block}
-
+.page{background:#fff;overflow:hidden}.page canvas{width:100%;height:100%;display:block}
 #loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#70758a}
 .nav{
   position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;
@@ -92,7 +91,7 @@ header{
 }
 .nav:hover{background:#fff}.prev{left:3%}.next{right:3%}
 .reader-footer{
-  position:fixed;bottom:50px;left:0;right:0;height:38px;display:flex;
+  position:fixed;bottom:15px;left:0;right:0;height:38px;display:flex;
   justify-content:center;align-items:center;gap:18px;z-index:5
 }
 #info{font-size:13px;font-weight:600;letter-spacing:1px}
@@ -150,10 +149,6 @@ header{
 import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs";
 pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
 
-/*
-  ШИНЭ НОМ НЭМЭХДЭЭ ЗӨВХӨН ЭНЭ ЖАГСААЛТАД 1 МӨР НЭМНЭ.
-  Дараа нь PDF файлаа repository-д байрлуулна.
-*/
 const books = [
   {
     slug: "PersonalData",
@@ -162,7 +157,6 @@ const books = [
     pdf: "/Redbook1.pdf",
     cover: "/Redbook1.jpg"
   },
-
   {
     slug: "PersonalDataResearch",
     title: "СУДАЛГААНД ХҮНИЙ ХУВИЙН МЭДЭЭЛЛИЙГ АШИГЛАХ НЬ",
@@ -172,14 +166,11 @@ const books = [
   }
 ];
 
- 
-
 const library = document.querySelector("#library");
 const libraryHeader = document.querySelector("#libraryHeader");
 const reader = document.querySelector("#reader");
 const readerTitle = document.querySelector("#readerTitle");
 const bookEl = document.querySelector("#book");
-const loading = document.querySelector("#loading");
 const info = document.querySelector("#info");
 
 function showLibrary(){
@@ -192,48 +183,21 @@ function showLibrary(){
 }
 
 function renderLibrary(){
-
   library.innerHTML = "";
-
   books.forEach(b => {
-
     const card = document.createElement("article");
-
     card.className = "card";
-
     card.innerHTML = `
       <div class="cover" style="background:#fff; padding:0; overflow:hidden;">
-  <img
-    src="${b.cover}"
-    alt="${b.title}"
-    style="
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    "
-  >
-</div>
-
-      <div class="card-meta">
-        DIGITAL BOOK
+        <img src="${b.cover}" alt="${b.title}" style="width:100%;height:100%;object-fit:cover;display:block;">
       </div>
-
-      <div class="card-title">
-        ${b.title}
-      </div>
-
-      <div class="open-label">
-        Номыг нээх →
-      </div>
+      <div class="card-meta">DIGITAL BOOK</div>
+      <div class="card-title">${b.title}</div>
+      <div class="open-label">Номыг нээх →</div>
     `;
-
     card.onclick = () => openBook(b);
-
     library.appendChild(card);
-
   });
-
 }
 
 async function openBook(b){
@@ -252,122 +216,82 @@ async function openBook(b){
     const width=Math.min(630,Math.max(300,innerWidth*.42));
     const height=width*(vp.height/vp.width);
 
-  const flip=new St.PageFlip(bookEl,{
-  width,
-  height,
-  size:"fixed",
-  minWidth:280,
-  maxWidth:900,
-  minHeight:380,
-  maxHeight:1200,
+    const flip=new St.PageFlip(bookEl,{
+      width,
+      height,
+      size:"stretch",
+      minWidth:280,
+      maxWidth:900,
+      minHeight:380,
+      maxHeight:1200,
 
-  showCover:true,
-  showPageCorners:false,
-  usePortrait:true,
-  useMouseEvents:true,
-  mobileScrollSupport:false,
+      showCover: true, // ЗӨВХӨН ЭНЭ ТОХИРГООГ true БОЛГОЖ ЗАСАВ (Анхны CSS, Хэмжээ хэвээрээ)
+      showPageCorners:false,
+      usePortrait:false,
+      useMouseEvents:false,
+      mobileScrollSupport:false,
 
-  flippingTime:600,
-  drawShadow:true,
-  maxShadowOpacity:0.15
-});
+      flippingTime:600,
+      drawShadow:false,
+      maxShadowOpacity:0
+    });
     
     const pages = [];
-const rendered = new Set();
+    const rendered = new Set();
 
-const firstPage = await pdf.getPage(1);
-const firstViewport = firstPage.getViewport({scale:1.45});
+    for(let i=1;i<=pdf.numPages;i++){
+      const d = document.createElement("div");
+      d.className = "page";
+      if (i === 1) d.dataset.density = "hard";
 
-for(let i=1;i<=pdf.numPages;i++){
+      const c = document.createElement("canvas");
+      c.width = vp.width * 1.45;
+      c.height = vp.height * 1.45;
 
-const d = document.createElement("div");
-d.className = "page";
-if (i === 1 || i === pdf.numPages) {
-  d.dataset.density = "hard";
-} else {
-  d.dataset.density = "soft";
-}
+      d.appendChild(c);
+      pages.push(d);
+    }
 
-  const c = document.createElement("canvas");
+    flip.loadFromHTML(pages);
+    document.querySelector("#loading")?.remove();
 
-  c.width = firstViewport.width;
-  c.height = firstViewport.height;
+    async function renderPage(pageNumber){
+      if(pageNumber < 1 || pageNumber > pdf.numPages) return;
+      if(rendered.has(pageNumber)) return;
 
-  d.appendChild(c);
-  pages.push(d);
-}
+      rendered.add(pageNumber);
 
-flip.loadFromHTML(pages);
+      const p = await pdf.getPage(pageNumber);
+      const renderScale = 1.45;
+      const v = p.getViewport({ scale: renderScale });
+      const canvas = pages[pageNumber - 1].querySelector("canvas");
+      const ctx = canvas.getContext("2d");
+      const outputScale = Math.min(window.devicePixelRatio || 1, 2);
 
-document.querySelector("#loading")?.remove();
+      canvas.width = Math.floor(v.width * outputScale);
+      canvas.height = Math.floor(v.height * outputScale);
 
-async function renderPage(pageNumber){
+      await p.render({
+        canvasContext: ctx,
+        viewport: v,
+        transform: [outputScale, 0, 0, outputScale, 0, 0]
+      }).promise;
+    }
 
-  if(pageNumber < 1 || pageNumber > pdf.numPages) return;
-  if(rendered.has(pageNumber)) return;
+    await renderPage(1);
+    if(pdf.numPages > 1) await renderPage(2);
 
-  rendered.add(pageNumber);
-
-  const p = await pdf.getPage(pageNumber);
-
-  const renderScale = 1.45;
-
-  const v = p.getViewport({
-    scale: renderScale
-  });
-
-  const canvas =
-    pages[pageNumber - 1].querySelector("canvas");
-
-  const ctx = canvas.getContext("2d");
-
-  const outputScale =
-    Math.min(window.devicePixelRatio || 1, 2);
-
-  /* Өндөр resolution-оор дотор нь render хийнэ */
-  canvas.width =
-    Math.floor(v.width * outputScale);
-
-  canvas.height =
-    Math.floor(v.height * outputScale);
-
-  /* Дэлгэц дээрх хэмжээг PageFlip өөрөө удирдана */
-
-  await p.render({
-    canvasContext: ctx,
-    viewport: v,
-    transform: [
-      outputScale,
-      0,
-      0,
-      outputScale,
-      0,
-      0
-    ]
-  }).promise;
-}
-
-await renderPage(1);
-if(pdf.numPages > 1) await renderPage(2);
-    
     const update = async () => {
-  const current = flip.getCurrentPageIndex() + 1;
+      const current = flip.getCurrentPageIndex() + 1;
+      info.textContent = `Хуудас ${current} / ${pdf.numPages}`;
 
-  if (current === 1) {
-    info.textContent = `Нүүр хуудас (1 / ${pdf.numPages})`;
-  } else {
-    info.textContent = `Хуудас ${current} / ${pdf.numPages}`;
-  }
+      await renderPage(current);
+      await renderPage(current + 1);
+      await renderPage(current - 1);
+    };
 
-  await renderPage(current);
-  await renderPage(current + 1);
-  await renderPage(current + 2);
-  await renderPage(current - 1);
-};
-    
-
-flip.on("flip", update);
-update();
+    flip.on("flip", update);
+    update();
 
     document.querySelector(".prev").onclick=()=>flip.flipPrev();
     document.querySelector(".next").onclick=()=>flip.flipNext();
