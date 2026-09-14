@@ -225,7 +225,7 @@ async function openBook(b){
       minHeight:380,
       maxHeight:1200,
 
-      showCover: true, // ЗӨВХӨН ЭНЭ ТОХИРГООГ true БОЛГОЖ ЗАСАВ (Анхны CSS, Хэмжээ хэвээрээ)
+      showCover: true,
       showPageCorners:false,
       usePortrait:false,
       useMouseEvents:false,
@@ -242,11 +242,15 @@ async function openBook(b){
     for(let i=1;i<=pdf.numPages;i++){
       const d = document.createElement("div");
       d.className = "page";
+      // АНИМАЦИ ХИЙХЭД ХУУДАС САЛАХЫГ ЗАСАХ НЭМЭЛТ:
+      d.style.width = width + "px";
+      d.style.height = height + "px";
+
       if (i === 1) d.dataset.density = "hard";
 
       const c = document.createElement("canvas");
-      c.width = vp.width * 1.45;
-      c.height = vp.height * 1.45;
+      c.style.width = "100%";
+      c.style.height = "100%";
 
       d.appendChild(c);
       pages.push(d);
