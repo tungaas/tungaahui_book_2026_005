@@ -128,6 +128,8 @@ header{
 
 <section id="reader">
   <button class="button back" id="backToLibrary">← Номын сан</button>
+
+  
   <div class="reader-header">
     <div class="kicker">ТУНГААХУЙ ӨГӨГДЛИЙН УРЛАН</div>
     <div class="reader-title" id="readerTitle"></div>
@@ -137,13 +139,16 @@ header{
   </div>
   <button class="nav prev" aria-label="Previous">‹</button>
   <button class="nav next" aria-label="Next">›</button>
+
   <div class="reader-footer">
-    <span id="info">Хуудас 1 / …</span>
-    <button class="button" id="fullscreen">⛶&nbsp; Бүтэн дэлгэц</button>
+  <span id="info">Хуудас 1 / …</span>
+  <button class="button" id="downloadPdf">↓&nbsp; Татан авах</button>
+  <button class="button" id="fullscreen">⛶&nbsp; Бүтэн дэлгэц</button>
+
   </div>
 </section>
 
-<div class="credit">© ТУНГААХУЙ</div>
+<div class="credit">© ТУНГААХУЙ ӨГӨГДЛИЙН УРЛАН</div>
 
 <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <script type="module">
@@ -261,6 +266,9 @@ async function openBook(b){
     }
 
     flip.loadFromHTML(pages);
+
+
+    
     document.querySelector("#loading")?.remove();
 
     async function renderPage(pageNumber){
@@ -305,6 +313,15 @@ async function openBook(b){
     document.querySelector(".next").onclick=()=>flip.flipNext();
     document.querySelector("#fullscreen").onclick=()=>document.fullscreenElement
       ?document.exitFullscreen():document.documentElement.requestFullscreen();
+
+    document.querySelector("#downloadPdf").onclick=()=>{
+  const link = document.createElement("a");
+  link.href = b.pdf;
+  link.download = b.pdf.split("/").pop();
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
 
   }catch(e){
     document.querySelector("#loading").textContent=
