@@ -77,13 +77,25 @@ header{
   box-sizing:border-box;
 }
 
-#book{
+  #book{
   width:min(92vw,1260px);
   height:min(78vh,700px);
   position:relative;
+  margin: 0 auto; /* Номыг төвд байрлуулна */
 }
-.page{background:#fff;overflow:hidden}.page canvas{width:100%;height:100%;display:block}
-#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#70758a}
+.page{
+  background:#fff;
+  overflow:hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1); /* Хуудасны заадсыг зааглана */
+}
+.page canvas{width:100%;height:100%;display:block}
+
+/* Хавтас ганцаараа байх үед 2-р хуудастай наалдахаас сэргийлэх CSS */
+.stflip-parent {
+  margin: 0 auto !important;
+}
+
+  #loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#70758a}
 .nav{
   position:fixed;top:50%;transform:translateY(-50%);width:46px;height:46px;
   border:1px solid #ddd;border-radius:50%;background:rgba(255,255,255,.92);
@@ -226,6 +238,7 @@ async function openBook(b){
       maxHeight:1200,
 
       showCover: true,
+      autoSize: true,
       showPageCorners: false,
       usePortrait: true, // <-- ЭНИЙГ true БОЛГОНО (1-р хуудсыг ганцаар нь голлуулна)
       useMouseEvents: true,
