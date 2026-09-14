@@ -226,14 +226,15 @@ async function openBook(b){
       maxHeight:1200,
 
       showCover: true,
-      showPageCorners:false,
-      usePortrait:false,
-      useMouseEvents:false,
-      mobileScrollSupport:false,
+      showPageCorners: false,
+      usePortrait: true, // <-- ЭНИЙГ true БОЛГОНО (1-р хуудсыг ганцаар нь голлуулна)
+      useMouseEvents: true,
+      mobileScrollSupport: false,
 
-      flippingTime:600,
-      drawShadow:false,
-      maxShadowOpacity:0
+      flippingTime: 600,
+      drawShadow: true,
+      maxShadowOpacity: 0.15
+        
     });
     
     const pages = [];
@@ -242,11 +243,13 @@ async function openBook(b){
     for(let i=1;i<=pdf.numPages;i++){
       const d = document.createElement("div");
       d.className = "page";
-      // АНИМАЦИ ХИЙХЭД ХУУДАС САЛАХЫГ ЗАСАХ НЭМЭЛТ:
-      d.style.width = width + "px";
-      d.style.height = height + "px";
-
-      if (i === 1) d.dataset.density = "hard";
+      
+      // Эхний болон сүүлчийн хуудсанд хатуу хавтасны шинж чанар өгнө
+      if (i === 1 || i === pdf.numPages) {
+        d.dataset.density = "hard";
+      } else {
+        d.dataset.density = "soft";
+      }
 
       const c = document.createElement("canvas");
       c.style.width = "100%";
